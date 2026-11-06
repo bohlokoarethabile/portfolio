@@ -40,25 +40,23 @@
     <!-- personal information --->
     <div class="contact-container">
       <!-- Contact Form -->
-      <form class="contact-form" action="https://formsubmit.co/rethabilemokoena458@gmail.com" method="POST">
+      <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
         <!--now my emails will be directed to me-->
-
+        <input type="hidden" name="access_key" value="YOUR-KEY-HERE">
         <input type="hidden" name="_subject" value="New message from your Portfolio!">
-        <input type="hidden" name="_next" value="https://bohlokoarethabile.github.io/portfolio/thankyou.html">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="text" name="_honey" style="display:none"> <!-- spam trap, keep -->
+        <input type="hidden" name="_redirect" value="https://bohlokoarethabile.github.io/portfolio/thankyou.html">
+        <input type="text" name="botcheck" style="display:none"> <!-- spam trap, keep -->
 
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="Your Name" required>
 
-
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="example@email.com" required
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="example@email.com" required
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
 
 
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
+        <label>Message</label>
+        <textarea name="message" rows="5" placeholder="Write your message here..." required></textarea>
 
         <button type="submit" class="btn">Send Message</button> <!-- send a message button --->
       </form>
