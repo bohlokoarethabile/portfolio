@@ -1,0 +1,185 @@
+/* ===== Education & Experience Page ===== */
+.education, .experience {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 100px 60px;
+}
+
+.education h2, .experience h2 {
+  font-family: 'Playfair Display', serif;
+  color: #d7a9a3;
+  font-size: 2.4rem;
+  margin-bottom: 15px;
+}
+
+.section-intro {
+  max-width: 700px;
+  margin: 0 auto 50px auto;
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* ===== Education Table ===== */
+.edu-table {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 80px;
+}
+
+.edu-table table {
+  border-collapse: collapse;
+  width: 90%;
+  max-width: 800px;
+  background: #fffaf0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.edu-table th {
+  background-color: #f6c1b0;
+  color: white;
+  padding: 15px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+}
+
+.edu-table td {
+  padding: 15px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  font-size: 1rem;
+  color: #555;
+}
+
+.edu-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== Experience Timeline ===== */
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #f6c1b0;
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  position: relative;
+  margin: 40px 0;
+  width: 50%;
+}
+
+.timeline-item:nth-child(odd) {
+  left: 0;
+}
+
+.timeline-item:nth-child(even) {
+  left: 50%;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d7a9a3;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.timeline-content {
+  background: #fffaf0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.timeline-content h3 {
+  font-family: 'Playfair Display', serif;
+  color: #d7a9a3;
+  margin-bottom: 10px;
+}
+
+.timeline-content p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Responsive Timeline */
+@media (max-width: 768px) {
+  .timeline::before {
+    left: 10px;
+  }
+
+  .timeline-item {
+    width: 100%;
+    left: 0 !important;
+    padding-left: 30px;
+  }
+
+  .timeline-dot {
+    left: 10px;
+    transform: none;
+  }
+}
+
+/* ===== Footer with Navigation ===== */
+footer {
+  background: #fffaf0;
+  text-align: center;
+  padding: 40px 20px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: auto;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #d7a9a3;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #f6c1b0;
+  text-decoration: underline;
+}
+
+footer p {
+  font-style: italic;
+  color: #888;
+}
+

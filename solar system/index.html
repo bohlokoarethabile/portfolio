@@ -1,0 +1,438 @@
+<!DOCTYPE html> <!-- Defines this as an HTML5 document -->
+<html lang="en"> <!-- Sets language to English -->
+<head>
+  <meta charset="UTF-8" /> <!-- Ensures special characters are displayed correctly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Makes layout responsive on all devices -->
+  <title>Galactic Solar System Calendar 2025</title> <!-- Page title displayed in browser tab -->
+
+  <!-- Importing futuristic fonts from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Poppins&display=swap" rel="stylesheet">
+
+  <style>
+  /* ===BODY & BACKGROUND STYLING === */
+  body {
+    margin: 0; /* Removes default browser margins */
+    height: 100vh; /* Makes body take full viewport height */
+    font-family: 'Poppins', sans-serif; /* Applies imported font */
+    overflow: hidden; /* Hides scrollbars — keeps space aesthetic */
+    display: flex; /* Centers solar system horizontally and vertically */
+    align-items: center;
+    justify-content: center;
+    color: white; /* Default text color */
+    background-image: url('your_page_background.jpg'); /* Background space image */
+    background-size: cover; /* Fills the screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents tiling */
+  }
+
+  /*======== MOVING STAR BACKGROUND EFFECT ============== */
+  body::before {
+    content: "✨✨✨✨✨✨✨✨✨✨"; /* Decorative sparkle characters */
+    position: absolute; /* Stays fixed over the background */
+    top: 0;
+    left: 0;
+    font-size: 14px;
+    opacity: 0.15; /* Subtle transparency */
+    white-space: nowrap; /* Prevents line breaks */
+    animation: stars 60s linear infinite; /* Infinite horizontal movement */
+  }
+
+  /* Animation that moves stars leftward across the screen */
+  @keyframes stars {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-200%); }
+  }
+
+  /* =========== SOLAR SYSTEM CONTAINER =============== */
+  .solar-system {
+    position: relative; /* Enables absolutely positioned children */
+    width: 750px; /* Overall system width */
+    height: 750px; /* Overall system height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -400px; /* Slight shift left to make room for the calendar */
+  }
+
+  /* ======================= SUN STYLING (center of the solar system) =================== */
+  .sun {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%; /* Makes it circular */
+    background-image: url('your_sun_image.png'); /* Sun image texture */
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 120px #ffd86b; /* Glowing yellow aura */
+    cursor: pointer; /* Changes cursor to hand when hovered */
+    z-index: 10; /* Places sun above planets */
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth hover animation */
+  }
+
+  /* Sun hover effect — enlarges slightly and intensifies glow */
+  .sun:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 180px #ffd86b;
+  }
+
+  /* ============= PLANET STYLING =========== */
+  .planet {
+    position: absolute; /* Positioned relative to solar-system container */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 20px #a48fff; /* Subtle purple glow */
+    transition: transform 0.3s, box-shadow 0.3s; /* Animation on hover */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-size: 14px;
+    line-height: 100px; /* Vertically centers month text */
+  }
+
+  /* Planet hover — slightly enlarges and increases glow */
+  .planet:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 30px #a48fff;
+  }
+
+  /* ==================== INDIVIDUAL PLANET BACKGROUNDS (Each month = one planet) ========================= */
+  .planet[data-month="January"] { background-image: url('mercury.png'); background-size: cover; }
+  .planet[data-month="February"] { background-image: url('venus.png'); background-size: cover; }
+  .planet[data-month="March"] { background-image: url('earth.png'); background-size: cover; }
+  .planet[data-month="April"] { background-image: url('mars.png'); background-size: cover; }
+  .planet[data-month="May"] { background-image: url('jupiter.png'); background-size: cover; }
+  .planet[data-month="June"] { background-image: url('saturn.png'); background-size: cover; }
+  .planet[data-month="July"] { background-image: url('uranus.png'); background-size: cover; }
+  .planet[data-month="August"] { background-image: url('neptune.png'); background-size: cover; }
+  .planet[data-month="September"] { background-image: url('space_explore.png'); background-size: cover; }
+  .planet[data-month="October"] { background-image: url('telescope.png'); background-size: cover; }
+  .planet[data-month="November"] { background-image: url('rocket.png'); background-size: cover; }
+  .planet[data-month="December"] { background-image: url('comet.png'); background-size: cover; }
+
+  /* =================== PLANET ORBIT POSITIONS (arranged around sun) ================ */
+  .planet:nth-child(2) { transform: rotate(0deg) translateX(270px); }
+  .planet:nth-child(3) { transform: rotate(30deg) translateX(270px); }
+  .planet:nth-child(4) { transform: rotate(60deg) translateX(270px); }
+  .planet:nth-child(5) { transform: rotate(90deg) translateX(270px); }
+  .planet:nth-child(6) { transform: rotate(120deg) translateX(270px); }
+  .planet:nth-child(7) { transform: rotate(150deg) translateX(270px); }
+  .planet:nth-child(8) { transform: rotate(180deg) translateX(270px); }
+  .planet:nth-child(9) { transform: rotate(210deg) translateX(270px); }
+  .planet:nth-child(10){ transform: rotate(240deg) translateX(270px); }
+  .planet:nth-child(11){ transform: rotate(270deg) translateX(270px); }
+  .planet:nth-child(12){ transform: rotate(300deg) translateX(270px); }
+  .planet:nth-child(13){ transform: rotate(330deg) translateX(270px); }
+
+  /* =================== MOON (Child of Earth planet) ======================== */
+  .moon {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 20px; /* Positioned slightly above */
+    left: -60px; /* Offset to the side of Earth */
+    border-radius: 50%;
+    background-image: url('your_moon_image.png');
+    background-size: cover;
+    box-shadow: 0 0 15px #ccc; /* Soft glow */
+    cursor: pointer;
+    transition: transform 0.3s;
+    z-index: 2;
+  }
+
+  /* Moon hover — enlarges slightly */
+  .moon:hover { transform: scale(1.2); }
+
+  /* ================= CALENDAR PANEL (Right side info panel) ================== */
+  .calendar {
+    position: absolute;
+    top: 50%;
+    left: 800px; /* Offset from solar system */
+    transform: translateY(-50%); /* Vertically center */
+    width: 380px;
+    max-height: 85vh; /* Keeps panel within screen */
+    overflow-y: auto; /* Allows scrolling if content too tall */
+    border-radius: 15px;
+    padding: 25px;
+    color: white;
+    background-color: rgba(10,10,25,0.65); /* Semi-transparent dark blue */
+    backdrop-filter: blur(10px); /* Frosted glass look */
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* ========================== CALENDAR TEXT & GRID STYLING ====================== */
+  .calendar h2 {
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    margin-top: 0;
+    color: #ffd86b; /* Yellow title text */
+  }
+  .calendar p {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  /* Grid layout for days of the month */
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+    text-align: center;
+    gap: 5px;
+    font-size: 13px;
+  }
+
+  /* Weekday name styling */
+  .day-name {
+    color: #ffd86b;
+    font-weight: bold;
+  }
+
+  /* Regular day cell */
+  .day {
+    padding: 5px 0;
+    border-radius: 6px;
+  }
+
+  /* Weekend cells */
+  .day.weekend {
+    background: rgba(255,216,107,0.15);
+  }
+
+  /* Public holiday cells */
+  .day.holiday {
+    background: rgba(255,255,0,0.25);
+    box-shadow: 0 0 8px rgba(255,255,100,0.6);
+    color: #ffd86b;
+    cursor: pointer;
+  }
+
+  /* Hover animation for holidays */
+  .day.holiday:hover {
+    transform: scale(1.1);
+  }
+
+  /* Details shown when clicking a holiday */
+  .holiday-detail {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255,255,200,0.1);
+    color: #ffe97f;
+  }
+  </style>
+</head>
+<body>
+
+<!-- ============ SOLAR SYSTEM STRUCTURE ============== -->
+<div class="solar-system">
+  <!-- Central Sun -->
+  <div class="sun" id="sun" title="Public Holidays"></div>
+
+  <!-- 12 Planets (one for each month) -->
+  <div class="planet" data-month="January">Jan</div>
+  <div class="planet" data-month="February">Feb</div>
+  <div class="planet" data-month="March" id="earth">Mar
+    <!-- Moon orbiting Earth -->
+    <div class="moon" id="moon" title="School Holidays"></div>
+  </div>
+  <div class="planet" data-month="April">Apr</div>
+  <div class="planet" data-month="May">May</div>
+  <div class="planet" data-month="June">Jun</div>
+  <div class="planet" data-month="July">Jul</div>
+  <div class="planet" data-month="August">Aug</div>
+  <div class="planet" data-month="September">Sep</div>
+  <div class="planet" data-month="October">Oct</div>
+  <div class="planet" data-month="November">Nov</div>
+  <div class="planet" data-month="December">Dec</div>
+
+  <!-- Side calendar panel -->
+  <div class="calendar" id="calendarBox">
+    <h2 id="monthTitle">January 2025</h2>
+    <p id="monthFact">☿ Mercury — closest planet to the Sun.</p>
+    <div id="daysGrid" class="days-grid"></div>
+    <div id="holidaysBox" class="holidays-list"></div>
+  </div>
+</div>
+
+<script> // JAVASCRIPT SECTION — LOGIC & INTERACTIVITY
+
+// Fun facts for each month/planet 
+const facts = {
+  January: "☿ Mercury — closest planet to the Sun. Did you know? A year on Mercury lasts only 88 Earth days!",
+  February: "♀ Venus — the hottest planet. Did you know? Venus spins backwards!",
+  March: "🌍 Earth — our home planet. Did you know? 71% of Earth’s surface is water!",
+  April: "♂ Mars — the red planet. Did you know? It has the largest volcano — Olympus Mons!",
+  May: "♃ Jupiter — the biggest planet. Did you know? Its Great Red Spot is larger than Earth!",
+  June: "♄ Saturn — the ringed giant. Did you know? Its rings are made of ice and rock!",
+  July: "♅ Uranus — spins on its side. Did you know? It spins on its side!",
+  August: "♆ Neptune — blue and windy. Did you know? Winds reach 2,100 km/h!",
+  September: "🌌 Month of exploration. Many space missions launched in September!",
+  October: "🔭 Astronomy month. Orionid meteor showers light up the skies!",
+  November: "🚀 Rocket month. The first spacewalk happened in November 1965!",
+  December: "☄️ Comet season. The Geminid meteor shower peaks every December!"
+};
+
+// Matching planet background images 
+const monthImages = {
+  January: "mercury.png",
+  February: "venus.png",
+  March: "earth.png",
+  April: "mars.png",
+  May: "jupiter.png",
+  June: "saturn.png",
+  July: "uranus.png",
+  August: "neptune.png",
+  September: "space_explore.png",
+  October: "telescope.png",
+  November: "rocket.png",
+  December: "comet.png"
+};
+
+// South African Public Holidays list 
+const saPublicHolidays = [
+  { date: "01 Jan", name: "New Year’s Day" },
+  { date: "21 Mar", name: "Human Rights Day" },
+  { date: "18 Apr", name: "Good Friday" },
+  { date: "21 Apr", name: "Family Day" },
+  { date: "27 Apr", name: "Freedom Day" },
+  { date: "01 May", name: "Workers’ Day" },
+  { date: "16 Jun", name: "Youth Day" },
+  { date: "09 Aug", name: "National Women’s Day" },
+  { date: "24 Sep", name: "Heritage Day" },
+  { date: "16 Dec", name: "Day of Reconciliation" },
+  { date: "25 Dec", name: "Christmas Day" },
+  { date: "26 Dec", name: "Day of Goodwill" }
+];
+
+// South African School Holidays 
+const saSchoolHolidays = [
+  { period: "Term 1", dates: "15 Jan – 28 Mar" },
+  { period: "Term 2", dates: "8 Apr – 27 Jun" },
+  { period: "Term 3", dates: "22 Jul – 3 Oct" },
+  { period: "Term 4", dates: "13 Oct – 10 Dec" }
+];
+
+// FUNCTION: Generate the monthly calendar grid
+function generateCalendar(month, year) {
+  const daysGrid = document.getElementById("daysGrid");
+  const holidaysBox = document.getElementById("holidaysBox");
+
+  // Clear previous content before generating new month
+  daysGrid.innerHTML = "";
+  holidaysBox.innerHTML = "";
+
+  // Determine first day of the month and number of days
+  const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
+  const firstDay = new Date(year, monthIndex, 1).getDay();
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+  // Add weekday headers (Sun, Mon, Tue, ...)
+  const dayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  dayNames.forEach(name => {
+    const el = document.createElement("div");
+    el.classList.add("day-name");
+    el.textContent = name;
+    daysGrid.appendChild(el);
+  });
+
+  // Add empty spaces before the first day
+  for (let i = 0; i < firstDay; i++)
+    daysGrid.appendChild(document.createElement("div"));
+
+  // Loop through all days in month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const el = document.createElement("div");
+    el.classList.add("day");
+    el.textContent = day;
+
+    // Format date to compare with holidays (e.g., "01 Jan")
+    const formattedDate = `${day.toString().padStart(2,"0")} ${month.slice(0,3)}`;
+    const holiday = saPublicHolidays.find(h => h.date === formattedDate);
+
+    // Mark weekends (Saturday & Sunday)
+    const dayOfWeek = new Date(`${month} ${day}, ${year}`).getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6)
+      el.classList.add("weekend");
+
+    // Mark public holidays
+    if (holiday) {
+      el.classList.add("holiday");
+      el.title = holiday.name;
+      // Show holiday details when clicked
+      el.addEventListener("click", () => {
+        holidaysBox.innerHTML = `<div class='holiday-detail'><strong>${holiday.date}</strong> — ${holiday.name}</div>`;
+      });
+    }
+
+    daysGrid.appendChild(el);
+  }
+}
+
+// PLANET CLICK HANDLER — Changes month and calendar
+document.querySelectorAll(".planet").forEach(planet => {
+  planet.addEventListener("click", () => {
+    const month = planet.dataset.month; // Get month name from data attribute
+    document.getElementById("monthTitle").textContent = `${month} 2025`;
+    document.getElementById("monthFact").textContent = facts[month];
+    document.getElementById("calendarBox").style.backgroundImage = `url('${monthImages[month]}')`;
+    generateCalendar(month, 2025); // Generate corresponding calendar
+  });
+});
+
+// SUN CLICK — Show full list of public holidays
+document.getElementById("sun").addEventListener("click", () => {
+  const list = document.getElementById("holidaysBox");
+  list.innerHTML = ""; // Clear previous content
+
+  // Create and display list of all holidays
+  saPublicHolidays.forEach(h => {
+    const div = document.createElement("div");
+    div.classList.add("holiday");
+    div.innerHTML = `<span>${h.date}</span> — ${h.name}`;
+    list.appendChild(div);
+  });
+
+  // Update calendar panel title and description
+  document.getElementById("monthTitle").textContent = "South African Public Holidays 2025 🇿🇦";
+  document.getElementById("monthFact").textContent = "Official national public holidays.";
+  document.getElementById("daysGrid").innerHTML = ""; // Remove day grid
+  document.getElementById("calendarBox").style.backgroundImage = "url('your_sun_image.png')";
+});
+
+// MOON CLICK — Show school holidays
+document.getElementById("moon").addEventListener("click", (event) => {
+  event.stopPropagation(); // Prevent click from triggering Earth event
+  const list = document.getElementById("holidaysBox");
+  list.innerHTML = "";
+
+  // Display school term periods
+  saSchoolHolidays.forEach(term => {
+    const div = document.createElement("div");
+    div.classList.add("holiday");
+    div.innerHTML = `<span>${term.period}</span> — ${term.dates}`;
+    list.appendChild(div);
+  });
+
+  // Update calendar panel content
+  document.getElementById("monthTitle").textContent = "South African School Holidays 2025 🏫";
+  document.getElementById("monthFact").textContent = "School terms and breaks for 2025.";
+  document.getElementById("daysGrid").innerHTML = "";
+  document.getElementById("calendarBox").style.backgroundImage = "url('your_moon_image.png')";
+});
+
+// INITIALIZATION — Load default month (January)
+   
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("monthTitle").textContent = "January 2025";
+  document.getElementById("monthFact").textContent = facts["January"];
+  document.getElementById("calendarBox").style.backgroundImage = `url('${monthImages["January"]}')`;
+  generateCalendar("January", 2025);
+});
+</script>
+</body>
+</html>

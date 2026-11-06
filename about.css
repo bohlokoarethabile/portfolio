@@ -1,0 +1,382 @@
+/* ===== General Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== Layout & Fonts ===== */
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to right, #fbe9e7, #fff8e1);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: #d7a9a3;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background: #d7a9a3;
+  left: 0;
+  bottom: -5px;
+  transition: 0.3s;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+/* ===== Section Spacing ===== */
+section {
+  padding: 120px 70px;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 70px 35px;
+  }
+}
+
+/* ===== About Page ===== */
+.about {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.about-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.about-text {
+  flex: 1 1 55%;
+  animation: fadeInUp 1.5s ease;
+}
+
+.about-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  color: #d7a9a3;
+  margin-bottom: 20px;
+}
+
+.about-text p {
+  margin-bottom: 15px;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  color: #444;
+}
+
+.quote {
+  border-left: 4px solid #d7a9a3;
+  padding-left: 15px;
+  font-style: italic;
+  color: #777;
+  margin-top: 25px;
+}
+
+.about-skills {
+  flex: 1 1 35%;
+  background: #fffaf0;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  animation: fadeIn 2s ease;
+}
+
+.about-skills h3 {
+  font-family: 'Playfair Display', serif;
+  color: #d7a9a3;
+  margin-bottom: 15px;
+}
+
+.about-skills ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.about-skills li {
+  background: #fbe9e7;
+  margin: 8px 0;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.about-skills li:hover {
+  background: #f6c1b0;
+  color: #fff;
+}
+
+/* ===== Elegant Button Styles ===== */
+.btn {
+  display: inline-block;
+  background-color: #d7a9a3;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  transition: 0.3s ease;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background-color: #f6c1b0;
+  transform: translateY(-3px);
+}
+
+/* ===== Footer with Navigation ===== */
+footer {
+  background: #fffaf0;
+  text-align: center;
+  padding: 40px 20px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: auto;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #d7a9a3;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #f6c1b0;
+  text-decoration: underline;
+}
+
+footer p {
+  font-style: italic;
+  color: #888;
+}
+
+/* ===== Extra About Page Sections ===== */
+.philosophy {
+  margin-top: 50px;
+  background: #fffaf0;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.philosophy h3 {
+  font-family: 'Playfair Display', serif;
+  color: #d7a9a3;
+  margin-bottom: 10px;
+}
+
+.journey {
+  margin-top: 50px;
+  margin-bottom: 20px; /* smaller space before photo */
+}
+
+.journey h3 {
+  font-family: 'Playfair Display', serif;
+  color: #d7a9a3;
+  margin-bottom: 15px;
+}
+
+.journey ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.journey li {
+  margin: 10px 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.journey strong {
+  color: #d7a9a3;
+}
+
+/* ===== About Photo Section (Enhanced with Frame + Glow) ===== */
+.about-photo {
+  position: relative;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.about-photo::before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(215,169,163,0.25) 0%, transparent 70%);
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: blur(35px);
+  z-index: 0;
+}
+
+.about-photo img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 620px;
+  border-radius: 22px;
+  border: 6px solid #fbe9e7;
+  box-shadow: 0 10px 28px rgba(215,169,163,0.25);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.about-photo img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 14px 35px rgba(215,169,163,0.35);
+}
+
+/* ===== Closing Quote (Soft Transition Below Photo) ===== */
+.closing-quote {
+  margin: 40px auto 30px auto;
+  max-width: 800px;
+  font-style: italic;
+  font-size: 1.15rem;
+  text-align: center;
+  color: #666;
+  border-left: none;
+  opacity: 0;
+  transform: translateY(25px);
+  animation: fadeUp 1.8s ease forwards;
+  animation-delay: 0.5s;
+}
+
+.closing-quote::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 2px;
+  background: #f6c1b0;
+  margin: 15px auto 0 auto;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* ===== Call to Action ===== */
+.about-cta {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.about-cta .btn {
+  padding: 12px 35px;
+  border-radius: 25px;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 20px;
+  }
+
+  .about-container {
+    flex-direction: column;
+  }
+
+  .about {
+    padding: 60px 30px;
+  }
+
+  section {
+    padding: 70px 35px;
+  }
+
+  .about-photo img {
+    max-width: 100%;
+  }
+}

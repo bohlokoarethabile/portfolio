@@ -1,0 +1,73 @@
+/* ===== Thank You Page ===== */
+.thankyou {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #fbe9e7, #fff8e1);
+  text-align: center;
+  color: #555;
+}
+
+.thankyou-content {
+  background: #fffaf0;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.thankyou h1 {
+  font-family: 'Playfair Display', serif;
+  color: #d7a9a3;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.thankyou p {
+  margin-bottom: 15px;
+  line-height: 1.8;
+}
+
+.thankyou .btn {
+  margin-top: 20px;
+  padding: 12px 35px;
+  border-radius: 25px;
+  background-color: #d7a9a3;
+  color: #fff;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.thankyou .btn:hover {
+  background-color: #f6c1b0;
+  transform: translateY(-3px);
+}
+
+/* ===== Soft Fade-in Animation for Thank You Page ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thankyou-content {
+  animation: fadeIn 1.8s ease forwards;
+}
+
+.thankyou-content {
+  background: #fffaf0;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  animation: fadeIn 1.8s ease forwards, softGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes softGlow {
+  from { box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  to { box-shadow: 0 6px 18px rgba(215,169,163,0.25); }
+}

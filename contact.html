@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- indicating the content language is english --->
+
+<head>
+  <meta charset="UTF-8" /> <!-- set the character encoding to utf 8 --->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- making the website responsive by setting the viewport width to the device width --->
+  <title>Contact | Bohlokoa Mokoena</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="contact.css" /> <!-- links the external css file for styling --->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap"
+    rel="stylesheet"> <!-- links the external css file for styling --->
+</head>
+
+<body>
+  <!-- top Navigation -->
+  <header>
+    <nav class="navbar"> <!-- defines the navigation menu--->
+      <h1 class="logo">Bohlokoa Mokoena</h1> <!-- put my name to serve as the website logo --->
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Me</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="education.html">Education</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+        <!-- class=active indicates the current active page --->
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Contact Section -->
+  <section class="contact">
+    <h2>Lets Get In Touch</h2>
+    <p class="section-intro">
+      I appreciate you for visiting my Website 🌸
+      Whether you have a question, a collaboration idea, or simply want to say hello —
+      I’d love to hear from you.
+    </p>
+
+    <!-- personal information --->
+    <div class="contact-container">
+      <!-- Contact Form -->
+      <form class="contact-form" action="https://formsubmit.co/rethabilemokoena458@gmail.com" method="POST">
+        <!--now my emails will be directed to me-->
+
+        <input type="hidden" name="_subject" value="New message from your Portfolio!">
+        <input type="hidden" name="_next" value="https://bohlokoarethabile.github.io/portfolio/thankyou.html">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="text" name="_honey" style="display:none"> <!-- spam trap, keep -->
+
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Your Name" required>
+
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="example@email.com" required
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
+
+        <button type="submit" class="btn">Send Message</button> <!-- send a message button --->
+      </form>
+
+      <!-- my Contact Info -->
+      <div class="contact-info">
+        <h3>Let’s Connect</h3>
+        <p>Email: <a href="mailto:bohloka@example.com">rethabilemokoena458@gmail.com</a></p>
+        <p>Alt Email: bohlokoarethabile@icloud.com</p>
+        <p>Phone: 067 749 2147</p>
+        <p>Location: Three Rivers, Vereeniging, Gauteng </p>
+        <p>Open to: Internships, Learnerships, Junior Dev roles</p>
+
+        <!-- putting social media icons --->
+        <div class="social-icons">
+          <a href="https://www.instagram.com/bohlokoa_m04?vrfl=YWxrazRqb3h5enpj&utm_source=qr" target="_blank"
+            title="Instagram">
+            <img src="images/Instagram.png" alt="Instagram">
+          </a>
+          <a href="https://linkedin.com/in/bohlokoa-mokoena" target="_blank" title="LinkedIn">
+            <img src="images/linkedin.png" alt="LinkedIn">
+          </a>
+          <a href="mailto:rethabilemokoena458@gmail.com" title="Email">
+            <img src="images/email.png" alt="Email">
+          </a>
+          <a href="https://github.com/bohlokoarethabile" title="GitHub">
+            <img src="images/GitHub.png" alt="GitHub">
+          </a>
+        </div>
+      </div>
+  </section>
+
+
+  <!-- The bottom Navigation -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-links"> <!-- links are repeated for navigation at the bottom --->
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="education.html">Education</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <p>© 2026 Bohlokoa M | Thank you for being part of my world 🌸</p>
+      <!-- copyright notice with personal message --->
+  </footer>
+</body>
+
+</html>

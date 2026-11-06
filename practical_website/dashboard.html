@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { margin:0; background:#F6C1CC; color:#444; }
+    header { padding:20px 30px; background:#E88FA2; color:white; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { margin:0; font-size:22px; }
+    header span { font-size:14px; opacity:0.9; }
+
+    .layout { display:flex; min-height: calc(100vh - 80px); }
+    .sidebar { width:220px; background:#F3AEBE; padding:30px 20px; display:flex; flex-direction:column; gap:14px; }
+    .sidebar a { text-decoration:none; color:white; padding:12px 16px; border-radius:16px; font-size:14px; cursor:pointer; }
+    .sidebar a.active, .sidebar a:hover { background: rgba(255,255,255,0.25); }
+
+    main { padding:40px; width:100%; }
+    .page { display:none; }
+    .page.active { display:block; }
+
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:30px; }
+    .card { background:#FFF7F9; border-radius:20px; padding:20px; box-shadow:0 10px 20px rgba(0,0,0,0.08); }
+    .wide { grid-column: 1 / -1; }
+    .module { border:1px solid #F1D2DA; border-radius:14px; padding:14px; margin-bottom:12px; }
+    .progress-bar { background:#F1D2DA; border-radius:10px; overflow:hidden; height:10px; margin-top:6px; }
+    .progress { height:100%; background:#9DB8A0; }
+
+    textarea, .input { width:100%; border-radius:14px; border:1px solid #E8B6C3; padding:10px 12px; margin-bottom:10px; font-size:14px; }
+    button { background:#E88FA2; color:white; border:none; padding:10px 18px; border-radius:14px; cursor:pointer; }
+    button:hover { opacity:0.9; }
+    footer { text-align:center; padding:16px; font-size:13px; color:#666; }
+    
+    .week-day { 
+      flex:1; 
+      background:#FFF7F9; 
+      border-radius:12px; 
+      padding:12px; 
+      text-align:center; 
+      border:2px solid transparent;
+    }
+    .week-day.today { border-color:#E88FA2; background:#FFE8ED; }
+    .week-day.class { background:#E8D5F2; }
+    .week-day.exam { background:#FFD5D5; }
+    .week-day.rest { background:#D5F2E0; }
+    
+    .routine-item {
+      background:#FFF7F9;
+      border-left:4px solid #E88FA2;
+      padding:10px;
+      margin-bottom:8px;
+      border-radius:6px;
+    }
+    
+    .day-section {
+      margin-bottom:20px;
+    }
+    
+    .day-section h5 {
+      margin:0 0 10px 0;
+      color:#E88FA2;
+      font-size:16px;
+    }
+    
+    .routine-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+      gap:20px;
+    }
+    
+    .badge {
+      display:inline-block;
+      padding:8px 16px;
+      border-radius:20px;
+      font-size:12px;
+      font-weight:500;
+      margin:4px;
+    }
+    
+    .badge.locked {
+      background:#E8E8E8;
+      color:#999;
+      opacity:0.6;
+    }
+    
+    .badge.unlocked {
+      background:linear-gradient(135deg, #FFD700, #FFA500);
+      color:white;
+      box-shadow:0 4px 15px rgba(255,215,0,0.4);
+      animation:pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform:scale(1); }
+      50% { transform:scale(1.05); }
+    }
+    
+    .goal-progress {
+      background:#F1D2DA;
+      border-radius:10px;
+      height:20px;
+      overflow:hidden;
+      margin:10px 0;
+      position:relative;
+    }
+    
+    .goal-progress-bar {
+      height:100%;
+      background:linear-gradient(90deg, #9DB8A0, #7FA88E);
+      transition:width 0.5s ease;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      padding-right:8px;
+      color:white;
+      font-size:12px;
+      font-weight:600;
+    }
+    
+    .notification {
+      background:#FFF7F9;
+      border-left:4px solid #E88FA2;
+      padding:12px;
+      margin-bottom:10px;
+      border-radius:8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      animation:slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform:translateX(-20px); opacity:0; }
+      to { transform:translateX(0); opacity:1; }
+    }
+    
+    .notification.urgent {
+      border-left-color:#C26A7A;
+      background:#FFE8ED;
+    }
+    
+    .notification.success {
+      border-left-color:#7FA88E;
+      background:#E8F5E9;
+    }
+    
+    .dismiss-btn {
+      background:transparent;
+      color:#666;
+      padding:4px 8px;
+      font-size:12px;
+    }
+    
+    .achievement-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+      gap:15px;
+      margin-top:15px;
+    }
+    
+    .achievement-card {
+      text-align:center;
+      padding:15px;
+      border-radius:12px;
+      background:#FFF7F9;
+      border:2px solid #F1D2DA;
+      transition:transform 0.2s;
+    }
+    
+    .achievement-card:hover {
+      transform:translateY(-2px);
+    }
+    
+    .achievement-card.unlocked {
+      border-color:#FFD700;
+      background:linear-gradient(135deg, #FFF9E6, #FFF7F9);
+    }
+    
+    .achievement-icon {
+      font-size:40px;
+      margin-bottom:8px;
+    }
+    
+    .achievement-card.locked .achievement-icon {
+      filter:grayscale(100%);
+      opacity:0.4;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Good morning</h1>
+    <span>Bokkie M's space.</span>
+  </div>
+  <div id="date"></div>
+</header>
+<div class="layout">
+  <nav class="sidebar">
+    <a class="active" data-page="dashboard">🏠 Dashboard</a>
+    <a data-page="modules">📚 Modules</a>
+    <a data-page="marks">🧮 Marks</a>
+    <a data-page="deadlines">📅 Deadlines</a>
+    <a data-page="goals">🎯 Goals</a>
+    <a data-page="motivation">🌸 Motivation</a>
+    <a data-page="routine">🕒 Routine</a>
+  </nav>
+
+  <main>
+    <!-- LOGIN PAGE -->
+    <section class="page" id="login">
+      <div class="card" style="max-width:380px;margin:auto">
+        <h3>Student Login</h3>
+        <input id="username" class="input" placeholder="Student name" />
+        <button id="loginBtn">Enter Dashboard</button>
+      </div>
+    </section>
+  
+    <!-- DASHBOARD PAGE -->
+    <section class="page active" id="dashboard">
+      <div class="grid">
+        <!-- NOTIFICATIONS -->
+        <div class="card wide">
+          <h3> Smart Reminders</h3>
+          <div id="notificationList"></div>
+        </div>
+        
+        <div class="card wide">
+          <h3>Today's thoughts</h3>
+          <p id="dashboardQuote" style="margin-top:10px;font-weight:500;color:#7FA88E"></p>
+          <textarea id="dailyThoughts" placeholder="Tell me more about your day..."></textarea>
+          <button id="saveFocus">Save</button>
+          <p id="thoughtQuote" style="margin-top:10px;font-style:italic;color:#666"></p>
+        </div>
+        
+        <div class="card wide">
+          <h3>Study Session</h3>
+          <input id="studyTask" class="input" placeholder="What are you studying?" />
+          <input id="studyMinutes" type="number" class="input" placeholder="Planned minutes" />
+          <div style="display:flex;gap:10px">
+            <button id="startStudy">Start</button>
+            <button id="cancelStudy" style="background:#C26A7A">Cancel</button>
+          </div>
+          <p id="timerDisplay" style="margin-top:10px;font-weight:500"></p>
+          <p id="studyFeedback" style="margin-top:6px"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULES PAGE -->
+    <section class="page" id="modules">
+      <div class="grid">
+        <div class="card">
+          <h3>Add Module</h3>
+          <input id="moduleName" class="input" placeholder="Module name" />
+          <input id="moduleCode" class="input" placeholder="Module code" />
+          <button id="addModule">Add Module</button>
+        </div>
+        <div class="card">
+          <h3>My Modules</h3>
+          <div id="moduleList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARKS PAGE -->
+    <section class="page" id="marks">
+      <div class="grid">
+        <div class="card wide">
+          <h3>Weighted Marks</h3>
+          <p style="font-size:14px;color:#666">Your marks will be entered here with weights. Final averages are calculated automatically.</p>
+          <div id="marksList"></div>
+          <h4 style="margin-top:20px">Semester GPA 2026</h4>
+          <p id="gpaDisplay" style="font-size:16px;font-weight:500"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEADLINES PAGE -->
+    <section class="page" id="deadlines">
+      <div class="grid">
+        <div class="card">
+          <h3>Add Deadline</h3>
+          <input id="deadlineTitle" class="input" placeholder="Assignment / Test" />
+          <input id="deadlineDate" type="date" class="input" />
+          <button id="addDeadline">Add Deadline</button>
+        </div>
+        <div class="card">
+          <h3>Upcoming Deadlines</h3>
+          <div id="deadlineList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GOALS & ACHIEVEMENTS PAGE -->
+    <section class="page" id="goals">
+      <div class="grid">
+        
+        <!-- SET GOALS -->
+        <div class="card">
+          <h3>Set Your Goals</h3>
+          
+          <label style="font-size:14px;font-weight:500;margin-top:10px;display:block">Target Semester GPA (%)</label>
+          <input id="targetGPA" type="number" class="input" placeholder="e.g., 75" min="0" max="100" />
+          
+          <label style="font-size:14px;font-weight:500;margin-top:10px;display:block">Weekly Study Hours</label>
+          <input id="targetStudyHours" type="number" class="input" placeholder="e.g., 20" min="0" />
+          
+          <label style="font-size:14px;font-weight:500;margin-top:10px;display:block">Study Streak Goal (days)</label>
+          <input id="targetStreak" type="number" class="input" placeholder="e.g., 7" min="1" />
+          
+          <button id="saveGoals">Save Goals</button>
+        </div>
+        
+        <!-- GOAL PROGRESS -->
+        <div class="card">
+          <h3>Goal Progress</h3>
+          <div id="goalProgress"></div>
+        </div>
+        
+        <!-- ACHIEVEMENTS -->
+        <div class="card wide">
+          <h3> Achievements</h3>
+          <p style="font-size:14px;color:#666;margin-bottom:15px">Unlock badges by reaching milestones!</p>
+          <div class="achievement-grid" id="achievementGrid"></div>
+        </div>
+        
+        <!-- STATS -->
+        <div class="card wide">
+          <h3> Your Stats</h3>
+          <div id="statsDisplay"></div>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- MOTIVATION PAGE -->
+    <section class="page" id="motivation">
+      <div class="grid">
+
+        <!-- DAILY MOTIVATION -->
+        <div class="card">
+          <h3>Daily Motivation</h3>
+          <p id="quote"></p>
+        </div>
+
+        <!-- WEEK TYPE -->
+        <div class="card wide">
+          <h3>Weekly Focus</h3>
+
+          <select id="weekSelect" class="input">
+            <option value="">Select week type</option>
+            <option value="class">Class Week 🟪</option>
+            <option value="exam">Exam Week 🟥</option>
+            <option value="rest">Rest Week 🟩</option>
+          </select>
+
+          <button id="saveWeekType">Save Week</button>
+
+          <p id="weekMessage" style="margin-top:10px;font-weight:500"></p>
+          <p id="examCountdown" style="margin-top:6px"></p>
+        </div>
+
+        <!-- WEEK CALENDAR -->
+        <div class="card wide">
+          <h4>Weekly Schedule</h4>
+          <div id="weekCalendar" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- FULL WEEK ROUTINE -->
+        <div class="card wide">
+          <h4>Full Week Routine Overview</h4>
+          <div id="fullWeekRoutine"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ROUTINE PAGE -->
+    <section class="page" id="routine">
+      <div class="grid">
+
+        <!-- ADD ROUTINE -->
+        <div class="card">
+          <h3>Add Routine</h3>
+
+          <select id="routineDay" class="input">
+            <option value="">Select day</option>
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+            <option value="0">Sunday</option>
+          </select>
+
+          <input type="time" id="routineTime" class="input">
+          <input type="text" id="routineTask" class="input" placeholder="What are you doing?">
+
+          <button id="addRoutine">Add Routine</button>
+        </div>
+
+        <!-- TODAY'S SCHEDULE -->
+        <div class="card wide">
+          <h3>Today's Schedule</h3>
+          <div id="routineList"></div>
+          <p id="routineDayLoad" style="margin-top:8px;font-weight:500;color:#7FA88E"></p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</div>
+<footer>🌸 Today is better than yesterday | created by Bohlokoa.</footer>
+
+<script>
+/* ------------------ USER SYSTEM ------------------ */
+const USER_KEY = 'student_user';
+
+function getUser() {
+  return localStorage.getItem(USER_KEY);
+}
+
+function requireLogin() {
+  if (!getUser()) {
+    showPage('login');
+    document.querySelector('.sidebar').style.display = 'none';
+    document.querySelector('header h1').textContent = 'Welcome 🌸';
+  } else {
+    document.querySelector('.sidebar').style.display = 'flex';
+    updateGreeting();
+  }
+}
+
+/* ------------------ LOGIN HANDLER (FIXED) ------------------ */
+document.getElementById('loginBtn')?.addEventListener('click', () => {
+  const username = document.getElementById('username').value.trim();
+  if (!username) {
+    alert('Please enter your name 🌸');
+    return;
+  }
+  localStorage.setItem(USER_KEY, username);
+  document.querySelector('.sidebar').style.display = 'flex';
+  updateGreeting();
+  showPage('dashboard');
+  renderAll();
+});
+
+// Allow Enter key to login
+document.getElementById('username')?.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    document.getElementById('loginBtn').click();
+  }
+});
+
+/* ------------------ DYNAMIC GREETING ------------------ */
+function updateGreeting() {
+  const now = new Date();
+  const hour = now.getHours();
+  let greeting = 'Hello 🌸';
+
+  if (hour >= 5 && hour < 12) greeting = 'Good morning 😘 - rested well?';
+  else if (hour >= 12 && hour < 17) greeting = 'Good afternoon 👩‍💻 - programming time!';
+  else if (hour >= 17 && hour < 21) greeting = 'Good evening 🦉 - quick break?';
+  else greeting = 'Good night 🥱 — rest well';
+
+  if(getUser()) greeting += `, ${getUser()}`;
+  document.querySelector('header h1').textContent = greeting;
+  
+  // Update date
+  const dateEl = document.getElementById('date');
+  if(dateEl) {
+    dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+}
+
+updateGreeting();
+setInterval(updateGreeting, 60 * 1000);
+
+/* ------------------ STORAGE HELPERS ------------------ */
+function getSafeUser() { return getUser() || 'guest'; }
+const key = suffix => `${getSafeUser()}_${suffix}`;
+function load(k) { try { return JSON.parse(localStorage.getItem(key(k))) || []; } catch { return []; } }
+function save(k,v){ localStorage.setItem(key(k), JSON.stringify(v)); }
+
+/* ------------------ MODULES ------------------ */
+document.getElementById('addModule')?.addEventListener('click', () => {
+  const moduleName = document.getElementById('moduleName');
+  const moduleCode = document.getElementById('moduleCode');
+  
+  if (!moduleName.value || !moduleCode.value) {
+    alert('Fill all fields 🌸');
+    return;
+  }
+  
+  const modules = load('modules');
+  modules.push({ name: moduleName.value, code: moduleCode.value, assessments: [] });
+  save('modules', modules);
+  moduleName.value = moduleCode.value = '';
+  renderModules();
+});
+
+function renderModules() {
+  const moduleList = document.getElementById('moduleList');
+  if (!moduleList) return;
+  
+  moduleList.innerHTML = '';
+  const modules = load('modules');
+  
+  if (modules.length === 0) {
+    moduleList.innerHTML = '<p style="color:#999;font-size:14px">No modules yet. Add your first one! 📚</p>';
+    return;
+  }
+  
+  modules.forEach((m,index) => {
+    const div = document.createElement('div');
+    div.className = 'module';
+    div.innerHTML = `
+      <strong>${m.name}</strong> (${m.code})
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button data-edit>Edit</button>
+        <button data-del style="background:#C26A7A">Delete</button>
+      </div>
+    `;
+    div.querySelector('[data-edit]').onclick = () => {
+      const newName = prompt('Edit module name:', m.name);
+      const newCode = prompt('Edit module code:', m.code);
+      if(!newName || !newCode) return;
+      m.name = newName; m.code = newCode;
+      modules[index] = m;
+      save('modules', modules);
+      renderModules();
+      renderMarks(); // Update marks display
+    }
+    div.querySelector('[data-del]').onclick = () => {
+      if(!confirm('Delete this module? This will also delete all associated marks.')) return;
+      modules.splice(index,1);
+      save('modules', modules);
+      renderModules();
+      renderMarks(); // Update marks display
+    }
+    moduleList.appendChild(div);
+  });
+}
+
+/* ------------------ ASSESSMENTS + MARKS ------------------ */
+function renderMarks() {
+  const marksList = document.getElementById('marksList');
+  const gpaDisplay = document.getElementById('gpaDisplay');
+  if (!marksList || !gpaDisplay) return;
+  
+  marksList.innerHTML = '';
+  let gpaTotal = 0, count = 0;
+  const modules = load('modules');
+
+  if (modules.length === 0) {
+    marksList.innerHTML = '<p style="color:#999;font-size:14px">Add modules first to track marks 📊</p>';
+    gpaDisplay.textContent = 'No marks yet';
+    return;
+  }
+
+  modules.forEach((m,mi) => {
+    let total=0, weightSum=0;
+    m.assessments.forEach(a => { total += a.mark * (a.weight/100); weightSum += a.weight; });
+    const avg = weightSum ? Math.round(total / (weightSum/100)) : 0;
+    if(avg) { gpaTotal += avg; count++; }
+
+    const div = document.createElement('div');
+    div.className='module';
+    div.innerHTML = `
+      <strong>${m.name}</strong> – <span style="color:#7FA88E;font-weight:600">${avg}%</span>
+      <input class="input name" placeholder="Assessment name">
+      <input class="input mark" type="number" placeholder="Mark %" min="0" max="100">
+      <input class="input weight" type="number" placeholder="Weight %" min="0" max="100">
+      <button>Add Assessment</button>
+      ${m.assessments.length ? "<div style='margin-top:8px'></div>" : ""}
+    `;
+
+    const assessmentContainer = div.querySelector('div');
+    div.querySelector('button').onclick = () => {
+      const n = div.querySelector('.name').value.trim();
+      const mark = +div.querySelector('.mark').value;
+      const w = +div.querySelector('.weight').value;
+      if(!n || mark<0 || mark>100 || w<=0 || w>100) {
+        alert('Enter valid values (marks and weights between 0-100) 🌸');
+        return;
+      }
+      m.assessments.push({ name:n, mark, weight:w });
+      modules[mi] = m;
+      save('modules', modules);
+      renderMarks();
+    }
+
+    m.assessments.forEach((a,ai) => {
+      const aDiv = document.createElement('div');
+      aDiv.style.marginTop='4px';
+      aDiv.innerHTML = `
+        <span>${a.name} – ${a.mark}% (Weight: ${a.weight}%)</span>
+        <button data-edit style="font-size:12px;padding:2px 6px">✏️</button>
+        <button data-del style="font-size:12px;padding:2px 6px;background:#C26A7A">🗑️</button>
+      `;
+      aDiv.querySelector('[data-edit]').onclick = () => {
+        const newName = prompt('Edit assessment name:', a.name);
+        if (!newName) return;
+        const newMark = prompt('Edit mark (0-100):', a.mark);
+        if (!newMark || +newMark < 0 || +newMark > 100) return;
+        const newWeight = prompt('Edit weight (0-100):', a.weight);
+        if (!newWeight || +newWeight <= 0 || +newWeight > 100) return;
+        m.assessments[ai] = { name:newName, mark:+newMark, weight:+newWeight };
+        modules[mi] = m;
+        save('modules', modules);
+        renderMarks();
+      }
+      aDiv.querySelector('[data-del]').onclick = () => {
+        if(!confirm('Delete this assessment?')) return;
+        m.assessments.splice(ai,1);
+        modules[mi] = m;
+        save('modules', modules);
+        renderMarks();
+      }
+      assessmentContainer.appendChild(aDiv);
+    });
+
+    marksList.appendChild(div);
+  });
+
+  gpaDisplay.textContent = count ? `📊 Semester GPA: ${(gpaTotal/count).toFixed(1)}%` : 'No marks yet';
+  checkAchievements(); // Check achievements when marks change
+}
+
+/* ------------------ DEADLINES ------------------ */
+document.getElementById('addDeadline')?.addEventListener('click', () => {
+  const deadlineTitle = document.getElementById('deadlineTitle');
+  const deadlineDate = document.getElementById('deadlineDate');
+  
+  if (!deadlineTitle.value || !deadlineDate.value) {
+    alert('Fill all fields 🌸');
+    return;
+  }
+  
+  const arr = load('deadlines');
+  arr.push({ title: deadlineTitle.value, date: deadlineDate.value });
+  save('deadlines', arr);
+  deadlineTitle.value = deadlineDate.value = '';
+  renderDeadlines();
+  generateNotifications(); // Update notifications when deadline added
+});
+
+function renderDeadlines() {
+  const deadlineList = document.getElementById('deadlineList');
+  if (!deadlineList) return;
+  
+  deadlineList.innerHTML = '';
+  const deadlines = load('deadlines').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  
+  if (deadlines.length === 0) {
+    deadlineList.innerHTML = '<p style="color:#999;font-size:14px">No deadlines yet 🎯</p>';
+    return;
+  }
+  
+  deadlines.forEach((d,index) => {
+    const daysUntil = Math.ceil((new Date(d.date) - new Date()) / (1000*60*60*24));
+    const urgency = daysUntil < 0 ? '🔴 Overdue' : daysUntil === 0 ? '🟠 Today!' : daysUntil <= 3 ? `🟡 ${daysUntil} days` : `🟢 ${daysUntil} days`;
+    
+    const div = document.createElement('div');
+    div.className='module';
+    div.innerHTML = `
+      <strong>${d.title}</strong> — ${d.date}<br>
+      <span style="font-size:12px;color:#666">${urgency}</span>
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button data-edit>Edit</button>
+        <button data-del style="background:#C26A7A">Delete</button>
+      </div>
+    `;
+    div.querySelector('[data-edit]').onclick = () => {
+      const newTitle = prompt('Edit title:', d.title);
+      const newDate = prompt('Edit date (YYYY-MM-DD):', d.date);
+      if(!newTitle || !newDate) return;
+      deadlines[index] = { title:newTitle, date:newDate };
+      save('deadlines', deadlines);
+      renderDeadlines();
+      generateNotifications();
+    }
+    div.querySelector('[data-del]').onclick = () => {
+      if(!confirm('Delete this deadline?')) return;
+      deadlines.splice(index,1);
+      save('deadlines', deadlines);
+      renderDeadlines();
+      generateNotifications();
+    }
+    deadlineList.appendChild(div);
+  });
+}
+
+/* ------------------ SMART NOTIFICATIONS ------------------ */
+function generateNotifications() {
+  const notificationList = document.getElementById('notificationList');
+  if (!notificationList) return;
+  
+  const notifications = [];
+  const dismissedNotifs = load('dismissedNotifications');
+  
+  // Check deadlines
+  const deadlines = load('deadlines');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  deadlines.forEach(d => {
+    const deadlineDate = new Date(d.date);
+    deadlineDate.setHours(0,0,0,0);
+    const daysUntil = Math.ceil((deadlineDate - today) / (1000*60*60*24));
+    
+    const notifId = `deadline-${d.title}-${d.date}`;
+    if (dismissedNotifs.includes(notifId)) return;
+    
+    if (daysUntil < 0) {
+      notifications.push({
+        id: notifId,
+        type: 'urgent',
+        icon: '🚨',
+        message: `Overdue: ${d.title} was due ${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} ago`,
+        action: 'View Deadlines',
+        page: 'deadlines'
+      });
+    } else if (daysUntil === 0) {
+      notifications.push({
+        id: notifId,
+        type: 'urgent',
+        icon: '⚠️',
+        message: `Due today: ${d.title}`,
+        action: 'View Deadlines',
+        page: 'deadlines'
+      });
+    } else if (daysUntil === 1) {
+      notifications.push({
+        id: notifId,
+        type: 'urgent',
+        icon: '⏰',
+        message: `Due tomorrow: ${d.title}`,
+        action: 'View Deadlines',
+        page: 'deadlines'
+      });
+    } else if (daysUntil <= 3) {
+      notifications.push({
+        id: notifId,
+        type: 'normal',
+        icon: '📅',
+        message: `Coming up: ${d.title} in ${daysUntil} days`,
+        action: 'View Deadlines',
+        page: 'deadlines'
+      });
+    }
+  });
+  
+  // Check study patterns
+  const sessions = load('studySessions');
+  const recentSessions = sessions.filter(s => {
+    const sessionDate = new Date(s.date);
+    const daysDiff = Math.ceil((today - sessionDate) / (1000*60*60*24));
+    return daysDiff <= 7;
+  });
+  
+  const todaySessions = sessions.filter(s => s.date === today.toISOString().split('T')[0]);
+  
+  // Suggest study session if none today
+  if (todaySessions.length === 0 && !dismissedNotifs.includes('study-suggestion-today')) {
+    notifications.push({
+      id: 'study-suggestion-today',
+      type: 'normal',
+      icon: '📚',
+      message: 'No study sessions yet today. Start your first session?',
+      action: 'Start Session',
+      page: 'dashboard'
+    });
+  }
+  
+  // Celebrate streak
+  const streak = calculateStreak();
+  if (streak >= 3 && !dismissedNotifs.includes(`streak-${streak}`)) {
+    notifications.push({
+      id: `streak-${streak}`,
+      type: 'success',
+      icon: '🔥',
+      message: `Amazing! ${streak}-day study streak! Keep going!`,
+      action: 'View Goals',
+      page: 'goals'
+    });
+  }
+  
+  // Check for burnout
+  const cancelled = recentSessions.filter(s=>s.cancelled).length;
+  if (cancelled >= 3 && !dismissedNotifs.includes('burnout-warning')) {
+    notifications.push({
+      id: 'burnout-warning',
+      type: 'urgent',
+      icon: '😰',
+      message: 'Burnout risk detected. Consider shorter sessions or take a break.',
+      action: 'Adjust Goals',
+      page: 'goals'
+    });
+  }
+  
+  // Check goals progress
+  const goals = load('goals');
+  if (goals.targetGPA) {
+    const modules = load('modules');
+    let gpaTotal = 0, count = 0;
+    modules.forEach(m => {
+      let total=0, weightSum=0;
+      m.assessments.forEach(a => { total += a.mark * (a.weight/100); weightSum += a.weight; });
+      const avg = weightSum ? Math.round(total / (weightSum/100)) : 0;
+      if(avg) { gpaTotal += avg; count++; }
+    });
+    const currentGPA = count ? (gpaTotal/count).toFixed(1) : 0;
+    
+    if (currentGPA >= goals.targetGPA && !dismissedNotifs.includes('gpa-achieved')) {
+      notifications.push({
+        id: 'gpa-achieved',
+        type: 'success',
+        icon: '🎉',
+        message: `Goal achieved! Your GPA (${currentGPA}%) reached your target!`,
+        action: 'View Goals',
+        page: 'goals'
+      });
+    }
+  }
+  
+  // Render notifications
+  notificationList.innerHTML = '';
+  
+  if (notifications.length === 0) {
+    notificationList.innerHTML = '<p style="color:#999;font-size:14px">All caught up! No new reminders 🌸</p>';
+    return;
+  }
+  
+  notifications.forEach(notif => {
+    const div = document.createElement('div');
+    div.className = `notification ${notif.type}`;
+    div.innerHTML = `
+      <div>
+        <span style="font-size:20px;margin-right:8px">${notif.icon}</span>
+        <span style="font-size:14px">${notif.message}</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="showPage('${notif.page}')" style="font-size:12px;padding:6px 12px">${notif.action}</button>
+        <button class="dismiss-btn" onclick="dismissNotification('${notif.id}')">✕</button>
+      </div>
+    `;
+    notificationList.appendChild(div);
+  });
+}
+
+function dismissNotification(id) {
+  const dismissed = load('dismissedNotifications');
+  dismissed.push(id);
+  save('dismissedNotifications', dismissed);
+  generateNotifications();
+}
+
+// Make dismissNotification available globally
+window.dismissNotification = dismissNotification;
+
+/* ------------------ MOTIVATION QUOTES ------------------ */
+const dailyQuotes = [
+  "Progress over perfection 🌱",
+  "You're doing better than you think 💪",
+  "Consistency beats motivation every time 🎯",
+  "Graduation is closer than you think 🎓",
+  "Be gentle, but don't stop 🌸",
+  "Become better than yesterday — always 🌱",
+  "You are supported even when it feels quiet ❤️",
+  "There is no mountain you cannot climb 👩‍🎓"
+];
+
+function showDailyQuote() {
+  const quoteEl = document.getElementById('quote');
+  const dashQuoteEl = document.getElementById('dashboardQuote');
+  
+  if (quoteEl) {
+    quoteEl.textContent = dailyQuotes[Math.floor(Math.random() * dailyQuotes.length)];
+  }
+  
+  if (dashQuoteEl) {
+    dashQuoteEl.textContent = dailyQuotes[Math.floor(Math.random() * dailyQuotes.length)];
+  }
+}
+
+/* ------------------ GOALS SYSTEM ------------------ */
+document.getElementById('saveGoals')?.addEventListener('click', () => {
+  const targetGPA = +document.getElementById('targetGPA').value;
+  const targetStudyHours = +document.getElementById('targetStudyHours').value;
+  const targetStreak = +document.getElementById('targetStreak').value;
+  
+  if (!targetGPA && !targetStudyHours && !targetStreak) {
+    alert('Set at least one goal 🌸');
+    return;
+  }
+  
+  const goals = {
+    targetGPA: targetGPA || null,
+    targetStudyHours: targetStudyHours || null,
+    targetStreak: targetStreak || null,
+    setDate: new Date().toISOString().split('T')[0]
+  };
+  
+  save('goals', goals);
+  alert('Goals saved! Track your progress below 🎯');
+  renderGoalProgress();
+  checkAchievements();
+});
+
+function renderGoalProgress() {
+  const goalProgress = document.getElementById('goalProgress');
+  if (!goalProgress) return;
+  
+  const goals = load('goals');
+  if (!goals.targetGPA && !goals.targetStudyHours && !goals.targetStreak) {
+    goalProgress.innerHTML = '<p style="color:#999;font-size:14px">Set your goals to track progress 🎯</p>';
+    return;
+  }
+  
+  goalProgress.innerHTML = '';
+  
+  // GPA Progress
+  if (goals.targetGPA) {
+    const modules = load('modules');
+    let gpaTotal = 0, count = 0;
+    modules.forEach(m => {
+      let total=0, weightSum=0;
+      m.assessments.forEach(a => { total += a.mark * (a.weight/100); weightSum += a.weight; });
+      const avg = weightSum ? Math.round(total / (weightSum/100)) : 0;
+      if(avg) { gpaTotal += avg; count++; }
+    });
+    const currentGPA = count ? (gpaTotal/count).toFixed(1) : 0;
+    const progress = Math.min((currentGPA / goals.targetGPA) * 100, 100);
+    
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <p style="font-weight:500;margin-bottom:5px">📊 Semester GPA Goal: ${goals.targetGPA}%</p>
+      <p style="font-size:14px;color:#666;margin-bottom:5px">Current: ${currentGPA}%</p>
+      <div class="goal-progress">
+        <div class="goal-progress-bar" style="width:${progress}%">${progress.toFixed(0)}%</div>
+      </div>
+    `;
+    goalProgress.appendChild(div);
+  }
+  
+  // Study Hours Progress
+  if (goals.targetStudyHours) {
+    const sessions = load('studySessions');
+    const thisWeekStart = new Date();
+    thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+    thisWeekStart.setHours(0,0,0,0);
+    
+    const thisWeekSessions = sessions.filter(s => {
+      const sessionDate = new Date(s.date);
+      return sessionDate >= thisWeekStart;
+    });
+    
+    const totalMinutes = thisWeekSessions.reduce((sum, s) => sum + s.actualMinutes, 0);
+    const totalHours = (totalMinutes / 60).toFixed(1);
+    const progress = Math.min((totalHours / goals.targetStudyHours) * 100, 100);
+    
+    const div = document.createElement('div');
+    div.style.marginTop = '15px';
+    div.innerHTML = `
+      <p style="font-weight:500;margin-bottom:5px">⏱️ Weekly Study Goal: ${goals.targetStudyHours} hours</p>
+      <p style="font-size:14px;color:#666;margin-bottom:5px">This week: ${totalHours} hours</p>
+      <div class="goal-progress">
+        <div class="goal-progress-bar" style="width:${progress}%">${progress.toFixed(0)}%</div>
+      </div>
+    `;
+    goalProgress.appendChild(div);
+  }
+  
+  // Streak Progress
+  if (goals.targetStreak) {
+    const currentStreak = calculateStreak();
+    const progress = Math.min((currentStreak / goals.targetStreak) * 100, 100);
+    
+    const div = document.createElement('div');
+    div.style.marginTop = '15px';
+    div.innerHTML = `
+      <p style="font-weight:500;margin-bottom:5px">🔥 Streak Goal: ${goals.targetStreak} days</p>
+      <p style="font-size:14px;color:#666;margin-bottom:5px">Current: ${currentStreak} day${currentStreak !== 1 ? 's' : ''}</p>
+      <div class="goal-progress">
+        <div class="goal-progress-bar" style="width:${progress}%">${progress.toFixed(0)}%</div>
+      </div>
+    `;
+    goalProgress.appendChild(div);
+  }
+}
+
+function calculateStreak() {
+  const sessions = load('studySessions');
+  if (sessions.length === 0) return 0;
+  
+  const uniqueDates = [...new Set(sessions.map(s => s.date))].sort().reverse();
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Must have studied today or yesterday to have an active streak
+  if (uniqueDates[0] !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    if (uniqueDates[0] !== yesterdayStr) return 0;
+  }
+  
+  let streak = 0;
+  let checkDate = new Date();
+  
+  for (let i = 0; i < 365; i++) {
+    const dateStr = checkDate.toISOString().split('T')[0];
+    if (uniqueDates.includes(dateStr)) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
+
+/* ------------------ ACHIEVEMENTS SYSTEM ------------------ */
+const ACHIEVEMENTS = [
+  {
+    id: 'first_session',
+    name: 'First Steps',
+    description: 'Complete your first study session',
+    icon: '🌱',
+    check: () => load('studySessions').length >= 1
+  },
+  {
+    id: 'streak_3',
+    name: '3-Day Streak',
+    description: 'Study for 3 consecutive days',
+    icon: '🔥',
+    check: () => calculateStreak() >= 3
+  },
+  {
+    id: 'streak_7',
+    name: 'Week Warrior',
+    description: 'Study for 7 consecutive days',
+    icon: '⚡',
+    check: () => calculateStreak() >= 7
+  },
+  {
+    id: 'streak_14',
+    name: 'Two Week Champion',
+    description: 'Study for 14 consecutive days',
+    icon: '👑',
+    check: () => calculateStreak() >= 14
+  },
+  {
+    id: 'streak_30',
+    name: 'Monthly Master',
+    description: 'Study for 30 consecutive days',
+    icon: '🏆',
+    check: () => calculateStreak() >= 30
+  },
+  {
+    id: 'perfect_week',
+    name: 'Perfect Week',
+    description: 'Complete all planned study hours in a week',
+    icon: '💯',
+    check: () => {
+      const sessions = load('studySessions');
+      const thisWeekStart = new Date();
+      thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+      thisWeekStart.setHours(0,0,0,0);
+      
+      const thisWeekSessions = sessions.filter(s => {
+        const sessionDate = new Date(s.date);
+        return sessionDate >= thisWeekStart;
+      });
+      
+      return thisWeekSessions.length >= 5 && thisWeekSessions.every(s => s.completed);
+    }
+  },
+  {
+    id: 'early_bird',
+    name: 'Early Bird',
+    description: 'Complete 5 study sessions before noon',
+    icon: '🌅',
+    check: () => {
+      // This would require storing session time, simplified for now
+      return load('studySessions').length >= 10;
+    }
+  },
+  {
+    id: 'night_owl',
+    name: 'Night Owl',
+    description: 'Complete 5 study sessions after 6pm',
+    icon: '🦉',
+    check: () => {
+      return load('studySessions').length >= 15;
+    }
+  },
+  {
+    id: 'marathon',
+    name: 'Marathon Student',
+    description: 'Complete a 2+ hour study session',
+    icon: '🏃',
+    check: () => {
+      const sessions = load('studySessions');
+      return sessions.some(s => s.actualMinutes >= 120);
+    }
+  },
+  {
+    id: 'gpa_goal',
+    name: 'Goal Achiever',
+    description: 'Reach your GPA goal',
+    icon: '🎯',
+    check: () => {
+      const goals = load('goals');
+      if (!goals.targetGPA) return false;
+      
+      const modules = load('modules');
+      let gpaTotal = 0, count = 0;
+      modules.forEach(m => {
+        let total=0, weightSum=0;
+        m.assessments.forEach(a => { total += a.mark * (a.weight/100); weightSum += a.weight; });
+        const avg = weightSum ? Math.round(total / (weightSum/100)) : 0;
+        if(avg) { gpaTotal += avg; count++; }
+      });
+      const currentGPA = count ? (gpaTotal/count).toFixed(1) : 0;
+      return currentGPA >= goals.targetGPA;
+    }
+  },
+  {
+    id: 'organized',
+    name: 'Organized Scholar',
+    description: 'Track 5+ modules with assessments',
+    icon: '📚',
+    check: () => {
+      const modules = load('modules');
+      return modules.filter(m => m.assessments.length > 0).length >= 5;
+    }
+  },
+  {
+    id: 'deadline_master',
+    name: 'Deadline Master',
+    description: 'No overdue deadlines for 2 weeks',
+    icon: '✅',
+    check: () => {
+      const deadlines = load('deadlines');
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      
+      return !deadlines.some(d => {
+        const deadlineDate = new Date(d.date);
+        deadlineDate.setHours(0,0,0,0);
+        return deadlineDate < today;
+      });
+    }
+  }
+];
+
+function checkAchievements() {
+  const unlockedAchievements = load('unlockedAchievements');
+  let newUnlocks = [];
+  
+  ACHIEVEMENTS.forEach(achievement => {
+    if (!unlockedAchievements.includes(achievement.id) && achievement.check()) {
+      unlockedAchievements.push(achievement.id);
+      newUnlocks.push(achievement);
+    }
+  });
+  
+  if (newUnlocks.length > 0) {
+    save('unlockedAchievements', unlockedAchievements);
+    
+    // Show celebration for new achievements
+    newUnlocks.forEach(ach => {
+      setTimeout(() => {
+        alert(`🎉 Achievement Unlocked!\n\n${ach.icon} ${ach.name}\n${ach.description}`);
+      }, 100);
+    });
+  }
+  
+  renderAchievements();
+}
+
+function renderAchievements() {
+  const achievementGrid = document.getElementById('achievementGrid');
+  if (!achievementGrid) return;
+  
+  const unlockedAchievements = load('unlockedAchievements');
+  achievementGrid.innerHTML = '';
+  
+  ACHIEVEMENTS.forEach(achievement => {
+    const isUnlocked = unlockedAchievements.includes(achievement.id);
+    
+    const card = document.createElement('div');
+    card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+    card.innerHTML = `
+      <div class="achievement-icon">${achievement.icon}</div>
+      <div style="font-weight:500;font-size:13px;margin-bottom:4px">${achievement.name}</div>
+      <div style="font-size:11px;color:#666">${achievement.description}</div>
+    `;
+    
+    achievementGrid.appendChild(card);
+  });
+}
+
+function renderStats() {
+  const statsDisplay = document.getElementById('statsDisplay');
+  if (!statsDisplay) return;
+  
+  const sessions = load('studySessions');
+  const modules = load('modules');
+  const deadlines = load('deadlines');
+  const unlockedAchievements = load('unlockedAchievements');
+  
+  const totalMinutes = sessions.reduce((sum, s) => sum + s.actualMinutes, 0);
+  const totalHours = (totalMinutes / 60).toFixed(1);
+  const totalSessions = sessions.length;
+  const currentStreak = calculateStreak();
+  const completedSessions = sessions.filter(s => s.completed).length;
+  const completionRate = totalSessions > 0 ? ((completedSessions / totalSessions) * 100).toFixed(0) : 0;
+  
+  statsDisplay.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px">
+      <div class="module">
+        <strong style="font-size:24px;color:#E88FA2">${totalHours}</strong>
+        <div style="font-size:13px;color:#666">Total Study Hours</div>
+      </div>
+      <div class="module">
+        <strong style="font-size:24px;color:#E88FA2">${totalSessions}</strong>
+        <div style="font-size:13px;color:#666">Study Sessions</div>
+      </div>
+      <div class="module">
+        <strong style="font-size:24px;color:#E88FA2">${currentStreak}</strong>
+        <div style="font-size:13px;color:#666">Day Streak</div>
+      </div>
+      <div class="module">
+        <strong style="font-size:24px;color:#E88FA2">${completionRate}%</strong>
+        <div style="font-size:13px;color:#666">Completion Rate</div>
+      </div>
+      <div class="module">
+        <strong style="font-size:24px;color:#E88FA2">${modules.length}</strong>
+        <div style="font-size:13px;color:#666">Modules Tracked</div>
+      </div>
+      <div class="module">
+        <strong style="font-size:24px;color:#E88FA2">${unlockedAchievements.length}/${ACHIEVEMENTS.length}</strong>
+        <div style="font-size:13px;color:#666">Achievements</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ------------------ DAILY THOUGHTS (FIXED) ------------------ */
+document.getElementById('saveFocus')?.addEventListener('click', () => {
+  const thoughts = document.getElementById('dailyThoughts').value;
+  const thoughtQuote = document.getElementById('thoughtQuote');
+  
+  if (!thoughts.trim()) {
+    alert('Write something first 🌸');
+    return;
+  }
+  
+  const entries = load('dailyThoughts');
+  entries.push({ date: new Date().toISOString().split('T')[0], text: thoughts });
+  save('dailyThoughts', entries);
+  
+  if (thoughtQuote) {
+    thoughtQuote.textContent = '🎯 Show up again tomorrow, Progress doesn’t need perfection and Stay cheerful — it suits you.';
+    setTimeout(() => { thoughtQuote.textContent = ''; }, 3000);
+  }
+});
+
+/* ------------------ STUDY TIMER (FIXED WITH AUTO-STOP) ------------------ */
+let timer = null;
+let startTime = null;
+let plannedMinutes = 0;
+let currentTask = '';
+
+function startStudyTimer() {
+  const taskInput = document.getElementById('studyTask');
+  const minutesInput = document.getElementById('studyMinutes');
+  const timerDisplay = document.getElementById('timerDisplay');
+
+  if (!taskInput || !minutesInput || !timerDisplay) return;
+
+  currentTask = taskInput.value.trim();
+  plannedMinutes = +minutesInput.value;
+
+  if (!currentTask || plannedMinutes <= 0) {
+    alert('Enter task and planned time 🌸');
+    return;
+  }
+
+  if(timer) clearInterval(timer);
+
+  startTime = Date.now();
+  const endTime = startTime + (plannedMinutes * 60 * 1000);
+  timerDisplay.textContent = `⏱️ Studying: ${currentTask}`;
+  
+  const studyFeedback = document.getElementById('studyFeedback');
+  if (studyFeedback) studyFeedback.textContent = '';
+
+  timer = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const remaining = endTime - Date.now();
+    
+    if (remaining <= 0) {
+      // Auto-stop when planned time is reached
+      endStudyTimer(false);
+      return;
+    }
+    
+    const mins = Math.floor(elapsed / 60000);
+    const secs = Math.floor((elapsed % 60000) / 1000);
+    const remainMins = Math.floor(remaining / 60000);
+    const remainSecs = Math.floor((remaining % 60000) / 1000);
+    
+    timerDisplay.textContent = `⏱️ ${mins}:${secs.toString().padStart(2,'0')} / ${plannedMinutes}:00 (${remainMins}:${remainSecs.toString().padStart(2,'0')} left)`;
+  }, 1000);
+}
+
+function endStudyTimer(cancelled = false) {
+  if (!startTime) return;
+  clearInterval(timer);
+  timer = null;
+
+  const actualMinutes = Math.floor((Date.now() - startTime)/60000);
+
+  saveStudySession({
+    task: currentTask,
+    plannedMinutes,
+    actualMinutes,
+    completed: !cancelled && actualMinutes >= plannedMinutes * 0.9,
+    cancelled
+  });
+
+  giveStudyFeedback(plannedMinutes, actualMinutes, cancelled);
+  
+  const timerDisplay = document.getElementById('timerDisplay');
+  if (timerDisplay) {
+    timerDisplay.textContent = cancelled ? '🛑 Session cancelled' : '✅ Session complete!';
+  }
+  
+  startTime = null;
+  renderBurnoutStatus();
+  checkAchievements(); // Check for new achievements after session
+  generateNotifications(); // Update notifications
+}
+
+function saveStudySession(session) {
+  const sessions = load('studySessions');
+  sessions.push({...session, date:new Date().toISOString().split('T')[0]});
+  save('studySessions', sessions);
+}
+
+function giveStudyFeedback(planned, actual, cancelled) {
+  const studyFeedback = document.getElementById('studyFeedback');
+  if (!studyFeedback) return;
+  
+  if(cancelled){
+    studyFeedback.textContent = '🛑 Session cancelled — was it fatigue or distraction?';
+    studyFeedback.style.color = '#C26A7A';
+    return;
+  }
+  const ratio = actual / planned;
+  if(ratio >= 1){ 
+    studyFeedback.textContent='🔥 Excellent discipline — this is exam-ready behavior'; 
+    studyFeedback.style.color='#7FA88E'; 
+  }
+  else if(ratio >=0.6){ 
+    studyFeedback.textContent='👍 Solid effort — a little more time will sharpen confidence'; 
+    studyFeedback.style.color='#9DB8A0'; 
+  }
+  else{ 
+    studyFeedback.textContent='⚠️ Short session — consider lighter blocks or breaks'; 
+    studyFeedback.style.color='#C26A7A'; 
+  }
+}
+
+/* ------------------ BURNOUT DETECTION ------------------ */
+function renderBurnoutStatus() {
+  const studyFeedback = document.getElementById('studyFeedback');
+  if(!studyFeedback) return;
+  
+  const sessions = load('studySessions').slice(-7);
+  const cancelled = sessions.filter(s=>s.cancelled).length;
+  const lowEffort = sessions.filter(s=>s.actualMinutes < s.plannedMinutes*0.5).length;
+  
+  if(cancelled>=3 || lowEffort>=4){
+    studyFeedback.textContent='Let us start studying, shall we?';
+    studyFeedback.style.color='#C26A7A';
+  }
+}
+
+document.getElementById('startStudy')?.addEventListener('click', startStudyTimer);
+document.getElementById('cancelStudy')?.addEventListener('click', ()=>endStudyTimer(true));
+window.addEventListener('beforeunload', ()=>{ if(startTime) endStudyTimer(true); });
+
+/* ------------------ WEEK TYPE & CALENDAR (FIXED) ------------------ */
+document.getElementById('saveWeekType')?.addEventListener('click', () => {
+  const weekSelect = document.getElementById('weekSelect');
+  const weekMessage = document.getElementById('weekMessage');
+  
+  const weekType = weekSelect.value;
+  if (!weekType) {
+    alert('Select a week type 🌸');
+    return;
+  }
+  
+  save('currentWeekType', weekType);
+  save('weekStartDate', new Date().toISOString().split('T')[0]);
+  
+  const messages = {
+    class: '🟪 Class week activated — focus on lectures and assignments',
+    exam: '🟥 Exam week! Deep focus mode — minimize distractions',
+    rest: '🟩 Rest week — recharge and reflect on progress'
+  };
+  
+  if (weekMessage) {
+    weekMessage.textContent = messages[weekType] || '';
+  }
+  
+  renderWeekCalendar();
+});
+
+function renderWeekCalendar() {
+  const weekCalendar = document.getElementById('weekCalendar');
+  if (!weekCalendar) return;
+  
+  const weekType = load('currentWeekType') || '';
+  const today = new Date().getDay();
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const allRoutines = load('routines');
+  
+  weekCalendar.innerHTML = '';
+  
+  days.forEach((day, index) => {
+    const dayRoutineCount = allRoutines.filter(r => r.day === index).length;
+    const div = document.createElement('div');
+    div.className = `week-day ${weekType} ${index === today ? 'today' : ''}`;
+    div.style.cursor = 'pointer';
+    div.innerHTML = `
+      <strong>${day}</strong><br>
+      <span style="font-size:12px;opacity:0.8">${dayRoutineCount} task${dayRoutineCount !== 1 ? 's' : ''}</span>
+    `;
+    
+    // Click to view that day's routine
+    div.onclick = () => {
+      showPage('routine');
+      // Optionally scroll to routine list
+      document.getElementById('routineList')?.scrollIntoView({ behavior: 'smooth' });
+    };
+    
+    weekCalendar.appendChild(div);
+  });
+  
+  renderFullWeekRoutine();
+}
+
+/* ------------------ FULL WEEK ROUTINE OVERVIEW ------------------ */
+function renderFullWeekRoutine() {
+  const fullWeekRoutine = document.getElementById('fullWeekRoutine');
+  if (!fullWeekRoutine) return;
+  
+  const allRoutines = load('routines');
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const today = new Date().getDay();
+  
+  fullWeekRoutine.innerHTML = '';
+  
+  if (allRoutines.length === 0) {
+    fullWeekRoutine.innerHTML = '<p style="color:#999;font-size:14px">No routines scheduled yet. Add some in the Routine page! 🕒</p>';
+    return;
+  }
+  
+  const routineGrid = document.createElement('div');
+  routineGrid.className = 'routine-grid';
+  
+  days.forEach((dayName, dayIndex) => {
+    const dayRoutines = allRoutines.filter(r => r.day === dayIndex).sort((a,b) => a.time.localeCompare(b.time));
+    
+    if (dayRoutines.length > 0) {
+      const daySection = document.createElement('div');
+      daySection.className = 'day-section';
+      
+      const isToday = dayIndex === today;
+      daySection.innerHTML = `<h5>${isToday ? '📍 ' : ''}${dayName}${isToday ? ' (Today)' : ''}</h5>`;
+      
+      dayRoutines.forEach(r => {
+        const routineDiv = document.createElement('div');
+        routineDiv.className = 'routine-item';
+        routineDiv.style.borderLeftColor = isToday ? '#E88FA2' : '#F3AEBE';
+        routineDiv.innerHTML = `<strong>${r.time}</strong> — ${r.task}`;
+        daySection.appendChild(routineDiv);
+      });
+      
+      routineGrid.appendChild(daySection);
+    }
+  });
+  
+  if (routineGrid.children.length === 0) {
+    fullWeekRoutine.innerHTML = '<p style="color:#999;font-size:14px">No routines scheduled yet. Add some in the Routine page! 🕒</p>';
+  } else {
+    fullWeekRoutine.appendChild(routineGrid);
+  }
+}
+
+/* ------------------ ROUTINE SYSTEM (FIXED) ------------------ */
+document.getElementById('addRoutine')?.addEventListener('click', () => {
+  const routineDay = document.getElementById('routineDay');
+  const routineTime = document.getElementById('routineTime');
+  const routineTask = document.getElementById('routineTask');
+  
+  if (!routineDay.value || !routineTime.value || !routineTask.value.trim()) {
+    alert('Fill all fields 🌸');
+    return;
+  }
+  
+  const routines = load('routines');
+  routines.push({
+    day: +routineDay.value,
+    time: routineTime.value,
+    task: routineTask.value
+  });
+  save('routines', routines);
+  
+  routineDay.value = '';
+  routineTime.value = '';
+  routineTask.value = '';
+  
+  renderRoutine();
+});
+
+function renderRoutine() {
+  const routineList = document.getElementById('routineList');
+  const routineDayLoad = document.getElementById('routineDayLoad');
+  if (!routineList) return;
+  
+  const today = new Date().getDay();
+  const routines = load('routines').filter(r => r.day === today).sort((a,b) => a.time.localeCompare(b.time));
+  
+  routineList.innerHTML = '';
+  
+  if (routines.length === 0) {
+    routineList.innerHTML = '<p style="color:#999;font-size:14px">No routines scheduled for today 📅</p>';
+    if (routineDayLoad) routineDayLoad.textContent = '';
+    return;
+  }
+  
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  if (routineDayLoad) {
+    routineDayLoad.textContent = `📅 ${days[today]}'s schedule (${routines.length} tasks)`;
+  }
+  
+  routines.forEach((r, index) => {
+    const div = document.createElement('div');
+    div.className = 'routine-item';
+    div.innerHTML = `
+      <strong>${r.time}</strong> — ${r.task}
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button data-del style="background:#C26A7A;font-size:12px;padding:4px 8px">Delete</button>
+      </div>
+    `;
+    
+    div.querySelector('[data-del]').onclick = () => {
+      if (!confirm('Delete this routine?')) return;
+      const allRoutines = load('routines');
+      const globalIndex = allRoutines.findIndex(ar => 
+        ar.day === r.day && ar.time === r.time && ar.task === r.task
+      );
+      if (globalIndex > -1) {
+        allRoutines.splice(globalIndex, 1);
+        save('routines', allRoutines);
+        renderRoutine();
+      }
+    };
+    
+    routineList.appendChild(div);
+  });
+}
+
+/* ------------------ PAGE NAV ------------------ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const targetPage = document.getElementById(id);
+  if (targetPage) targetPage.classList.add('active');
+  
+  document.querySelectorAll('.sidebar a').forEach(a=>{
+    a.classList.toggle('active', a.dataset.page===id);
+  });
+  
+  renderAll();
+}
+
+document.querySelectorAll('.sidebar a').forEach(a=>a.onclick=()=>showPage(a.dataset.page));
+
+/* ------------------ RENDER ALL ------------------ */
+function renderAll(){
+  renderModules();
+  renderMarks();
+  renderDeadlines();
+  renderRoutine();
+  renderWeekCalendar(); // This now also calls renderFullWeekRoutine
+  showDailyQuote();
+  renderBurnoutStatus();
+  generateNotifications();
+  renderGoalProgress();
+  renderAchievements();
+  renderStats();
+  checkAchievements(); // Check for new achievements on load
+}
+
+/* ------------------ INITIALIZE ------------------ */
+requireLogin();
+renderAll();
+</script>
+</body>
+</html>
